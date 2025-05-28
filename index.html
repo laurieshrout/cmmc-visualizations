@@ -83,11 +83,71 @@
             border-left: 6px solid;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
 
         .maturity-level:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .maturity-level.active {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .level-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+            background: #f8fafe;
+            border-radius: 8px;
+            margin-top: 0;
+        }
+
+        .level-details.expanded {
+            max-height: 500px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .detail-section {
+            margin-bottom: 15px;
+        }
+
+        .detail-section h5 {
+            color: #1f4788;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-list {
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .click-hint {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(31, 71, 136, 0.1);
+            color: #1f4788;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .maturity-level:hover .click-hint {
+            opacity: 1;
         }
 
         .level-1 { border-left-color: #28a745; }
@@ -415,7 +475,8 @@
             <h2 class="section-title">CMMC 2.0 Maturity Levels & Controls</h2>
             
             <div class="cmmc-framework">
-                <div class="maturity-level level-1">
+                <div class="maturity-level level-1" onclick="toggleLevelDetails(1)">
+                    <div class="click-hint">Click for details</div>
                     <div class="level-header">
                         <div class="level-number">1</div>
                         <div>
@@ -434,9 +495,25 @@
                     <p style="margin-top: 15px; font-size: 0.9rem; color: #6c757d;">
                         <strong>17 practices</strong> across 6 domains for basic protection of Federal Contract Information (FCI)
                     </p>
+                    
+                    <div class="level-details" id="details-1">
+                        <div class="detail-section">
+                            <h5>Assessment Type</h5>
+                            <div class="detail-list">Annual self-assessment required</div>
+                        </div>
+                        <div class="detail-section">
+                            <h5>Key Requirements</h5>
+                            <div class="detail-list">• Protect Federal Contract Information (FCI)<br>• Basic safeguarding per FAR 52.204-21<br>• Ad hoc implementation acceptable</div>
+                        </div>
+                        <div class="detail-section">
+                            <h5>Timeline</h5>
+                            <div class="detail-list">Phased rollout begins Q2 2025</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="maturity-level level-2">
+                <div class="maturity-level level-2" onclick="toggleLevelDetails(2)">
+                    <div class="click-hint">Click for details</div>
                     <div class="level-header">
                         <div class="level-number">2</div>
                         <div>
@@ -465,9 +542,25 @@
                     <p style="margin-top: 15px; font-size: 0.9rem; color: #6c757d;">
                         <strong>110 practices</strong> across 17 domains for NIST 800-171 alignment and CUI protection
                     </p>
+                    
+                    <div class="level-details" id="details-2">
+                        <div class="detail-section">
+                            <h5>Assessment Type</h5>
+                            <div class="detail-list">Self-assessment OR C3PAO assessment (based on contract requirements)</div>
+                        </div>
+                        <div class="detail-section">
+                            <h5>Key Requirements</h5>
+                            <div class="detail-list">• Protect Controlled Unclassified Information (CUI)<br>• Full NIST SP 800-171 compliance<br>• Documented processes required<br>• 3-year certification cycle</div>
+                        </div>
+                        <div class="detail-section">
+                            <h5>Timeline</h5>
+                            <div class="detail-list">6-18 months preparation time typically required</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="maturity-level level-3">
+                <div class="maturity-level level-3" onclick="toggleLevelDetails(3)">
+                    <div class="click-hint">Click for details</div>
                     <div class="level-header">
                         <div class="level-number">3</div>
                         <div>
@@ -496,6 +589,21 @@
                     <p style="margin-top: 15px; font-size: 0.9rem; color: #6c757d;">
                         <strong>158 practices</strong> for protection against APTs and nation-state actors
                     </p>
+                    
+                    <div class="level-details" id="details-3">
+                        <div class="detail-section">
+                            <h5>Assessment Type</h5>
+                            <div class="detail-list">Government-led assessment required</div>
+                        </div>
+                        <div class="detail-section">
+                            <h5>Key Requirements</h5>
+                            <div class="detail-list">• Protection against Advanced Persistent Threats<br>• NIST SP 800-171 + subset of SP 800-172<br>• Highest security clearance programs<br>• Most stringent documentation</div>
+                        </div>
+                        <div class="detail-section">
+                            <h5>Timeline</h5>
+                            <div class="detail-list">Phased implementation starting Phase 4 (Year 3)</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -710,6 +818,39 @@
     </div>
 
     <script>
+        // Toggle level details function
+        function toggleLevelDetails(level) {
+            const details = document.getElementById(`details-${level}`);
+            const levelElement = details.parentElement;
+            
+            // Close other open details
+            for (let i = 1; i <= 3; i++) {
+                if (i !== level) {
+                    const otherDetails = document.getElementById(`details-${i}`);
+                    const otherLevel = otherDetails.parentElement;
+                    otherDetails.classList.remove('expanded');
+                    otherLevel.classList.remove('active');
+                }
+            }
+            
+            // Toggle current details
+            if (details.classList.contains('expanded')) {
+                details.classList.remove('expanded');
+                levelElement.classList.remove('active');
+            } else {
+                details.classList.add('expanded');
+                levelElement.classList.add('active');
+                
+                // Smooth scroll to level if needed
+                setTimeout(() => {
+                    levelElement.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                }, 100);
+            }
+        }
+
         // Animate progress bars on load
         window.addEventListener('load', function() {
             setTimeout(() => {
@@ -726,6 +867,65 @@
                     }
                 });
             }, 500);
+        });
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key >= '1' && e.key <= '3') {
+                const level = parseInt(e.key);
+                toggleLevelDetails(level);
+            }
+        });
+
+        // Enhanced control item interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const controlItems = document.querySelectorAll('.control-item');
+            controlItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent level toggle
+                    
+                    // Create tooltip showing what the control means
+                    const controlMeanings = {
+                        'AC': 'Access Control - Limit information system access',
+                        'AT': 'Awareness and Training - Security awareness program', 
+                        'AU': 'Audit and Accountability - Create audit records',
+                        'CA': 'Security Assessment - Assess security controls',
+                        'CM': 'Configuration Management - Baseline configurations',
+                        'CP': 'Contingency Planning - Incident response plans',
+                        'IA': 'Identification and Authentication - Identify users',
+                        'IR': 'Incident Response - Handle security incidents',
+                        'MA': 'Maintenance - System maintenance controls',
+                        'MP': 'Media Protection - Protect system media',
+                        'PE': 'Physical Protection - Physical access controls',
+                        'PS': 'Personnel Security - Personnel screening',
+                        'RA': 'Risk Assessment - Assess organizational risk',
+                        'SA': 'System and Services Acquisition - Secure acquisition',
+                        'SC': 'System and Communications Protection - Separate duties',
+                        'SI': 'System and Information Integrity - Monitor systems'
+                    };
+                    
+                    const meaning = controlMeanings[this.textContent];
+                    if (meaning) {
+                        // Flash effect
+                        this.style.background = '#ff6b35';
+                        this.style.transform = 'scale(1.1)';
+                        
+                        setTimeout(() => {
+                            this.style.background = '#1f4788';
+                            this.style.transform = 'scale(1.05)';
+                        }, 150);
+                        
+                        setTimeout(() => {
+                            this.style.background = '#f8f9fa';
+                            this.style.color = '#495057';
+                            this.style.transform = 'scale(1)';
+                        }, 2000);
+                        
+                        // Show meaning in a subtle way
+                        console.log(`${this.textContent}: ${meaning}`);
+                    }
+                });
+            });
         });
     </script>
 </body>
